@@ -219,7 +219,11 @@ Method dequeue(resourceId As %String, Output found As %Boolean, Output deferToke
 	set found = (queueHeadKey '= "")
 	
 	// if lock wait queue is empty then bail out
-	if 'found quit $$$OK
+	if 'found
+	{
+		if $data(@queueNode) kill @queueNode  // clean up: kill queue counter node
+		quit $$$OK
+	}
 	
 	// pull the next element (token/session pair) from the queue
 	#dim val As %List = $get(@queueNode@(queueHeadKey))
